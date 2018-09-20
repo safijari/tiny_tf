@@ -41,7 +41,7 @@ class TFTree(object):
         frame_path_to_parent = self._get_path_to_parent(parent_node, frame)
         target_path_to_parent = self._get_path_to_parent(parent_node, target)
 
-        while True:
+        while True and len(frame_path_to_parent) > 0 and len(target_path_to_parent) > 0:
             if frame_path_to_parent[-1] == target_path_to_parent[-1]:
                 frame_path_to_parent.pop()
                 target_path_to_parent.pop()
@@ -58,9 +58,12 @@ class TFTree(object):
         frame_transform_to_common_parent = get_inverse_xform_for_path(frame_path_to_parent)
         target_transform_to_common_parent = get_inverse_xform_for_path(target_path_to_parent)
 
-        return np.dot(np.linalg.inv(target_transform_to_common_parent), frame_transform_to_common_parent)
+        return Transform.from_matrix(np.dot(np.linalg.inv(target_transform_to_common_parent), frame_transform_to_common_parent))
 
     def _get_path_to_parent(self, parent_node, node_name):
+        if node_name == parent_node.name:
+            return []
+
         node = self.nodes[node_name]
         traversed_nodes = {}
         path = []
@@ -91,8 +94,8 @@ class TFNode(object):
 class Transform(object):
     def __init__(self, x, y, z, qx, qy, qz, qw):
         self.x = x
-        self.y = x
-        self.z = x
+        self.y = y
+        self.z = z
         self.qx = qx
         self.qy = qy
         self.qz = qz
@@ -101,17 +104,17 @@ class Transform(object):
     @classmethod
     def from_matrix(cls, mat):
         x, y, z = mat[0:3, -1]
-        qx, qy, qz, qw = tft.quaternion_from_matrix(mat[0:3, 0:3])
+        qx, qy, qz, qw = tft.quaternion_from_matrix(mat)
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
     def from_position_euler(cls, x, y, z, roll, pitch, yaw):
-        qx, qy, qz, qw = tft.quaternion_from_euler((roll, pitch, yaw))
+        qx, qy, qz, qw = tft.quaternion_from_euler(roll, pitch, yaw)
+        return cls(x, y, z, qx, qy, qz, qw)
 
     @property
     def matrix(self):
-        out = np.identity(4)
-        out[0:3, 0:3] = self.rotation_matrix
+        out = self.rotation_matrix
         out[0, -1] = self.x
         out[1, -1] = self.y
         out[2, -1] = self.z
