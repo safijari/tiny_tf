@@ -51,8 +51,7 @@ class TFTree(object):
         def get_inverse_xform_for_path(path):
             transform_to_parent = np.identity(4)
             for node in path:
-                transform_to_parent = np.dot(np.linalg.inv(node.transformation_matrix),
-                                                        transform_to_parent)
+                transform_to_parent = np.dot(transform_to_parent, np.linalg.inv(node.transformation_matrix))
             return transform_to_parent
 
         frame_transform_to_common_parent = get_inverse_xform_for_path(frame_path_to_parent)
