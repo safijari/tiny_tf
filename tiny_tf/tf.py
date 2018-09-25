@@ -17,7 +17,7 @@ class TFTree(object):
             node.parent = self.nodes[parent]
             node.transform = xform
 
-    def lookup_transform(self, frame, target):
+    def lookup_transform(self, target, frame):
         if frame not in self.nodes:
             raise Exception("frame is not part of the tf tree")
         if target not in self.nodes:
