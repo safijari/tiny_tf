@@ -1,5 +1,7 @@
 import numpy as np
 import transformations as tft
+from collections import namedtuple
+
 
 
 class TFTree(object):
@@ -76,6 +78,11 @@ class TFTree(object):
                 break
 
         return path
+
+
+    def transform_point(self, x, y, z, target, base):
+        t = self.lookup_transform(target, base)
+        return np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
 
 class TFNode(object):
     def __init__(self, name, parent, transform):
