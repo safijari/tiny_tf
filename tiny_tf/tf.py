@@ -50,16 +50,20 @@ class TFTree(object):
             else:
                 break
 
+        # Note: I do not understand why the part below works
+
         def get_inverse_xform_for_path(path):
             transform_to_parent = np.identity(4)
             for node in path:
-                transform_to_parent = np.dot(transform_to_parent, np.linalg.inv(node.transformation_matrix))
+                transform_to_parent = np.dot(node.transformation_matrix, transform_to_parent)
             return transform_to_parent
 
         frame_transform_to_common_parent = get_inverse_xform_for_path(frame_path_to_parent)
         target_transform_to_common_parent = get_inverse_xform_for_path(target_path_to_parent)
 
-        return Transform.from_matrix(np.dot(np.linalg.inv(target_transform_to_common_parent), frame_transform_to_common_parent))
+        final_xform = np.dot(np.linalg.inv(target_transform_to_common_parent), frame_transform_to_common_parent)
+
+        return Transform.from_matrix(np.linalg.inv(final_xform))
 
     def _get_path_to_parent(self, parent_node, node_name):
         if node_name == parent_node.name:
