@@ -145,3 +145,6 @@ class Transform(object):
     @property
     def quaternion(self):
         return (self.qx, self.qy, self.qz, self.qw)
+
+    def inverse(self):
+        return Transform.from_matrix(np.linalg.inv(self.matrix))
