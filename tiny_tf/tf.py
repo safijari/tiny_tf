@@ -19,14 +19,7 @@ class TFTree(object):
             node.parent = self.nodes[parent]
             node.transform = xform
 
-    def lookup_transform(self, frame, target):
-        if target not in self.nodes:
-            raise Exception("target is not part of the tf tree")
-        if frame not in self.nodes:
-            raise Exception("frame is not part of the tf tree")
-        if target == frame:
-            return Transform(0, 0, 0, 0, 0, 0, 1)
-
+    def get_parent(self):
         parent_nodes = []
 
         for name, node in self.nodes.items():
@@ -38,7 +31,17 @@ class TFTree(object):
         if len(parent_nodes) == 0:
             raise Exception("No parent node found, there are probably cycles in the tree")
 
-        parent_node = parent_nodes[0]
+        return parent_nodes[0]
+
+    def lookup_transform(self, frame, target):
+        if target not in self.nodes:
+            raise Exception("target is not part of the tf tree")
+        if frame not in self.nodes:
+            raise Exception("frame is not part of the tf tree")
+        if target == frame:
+            return Transform(0, 0, 0, 0, 0, 0, 1)
+
+        parent_node = self.get_parent()
 
         frame_path_to_parent = self._get_path_to_parent(parent_node, target)
         target_path_to_parent = self._get_path_to_parent(parent_node, frame)
