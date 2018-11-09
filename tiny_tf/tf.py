@@ -3,10 +3,18 @@ import transformations as tft
 from collections import namedtuple
 
 
-
 class TFTree(object):
     def __init__(self):
         self.nodes = {}
+
+    def to_dict(self):
+        return {k: v.to_dict() for k, v in self.nodes.items()}
+
+    @classmethod
+    def from_dict(cls, indict):
+        out = cls()
+        out.nodes = {k: TFNode.from_dict(v) for k, v in indict.items()}
+        return out
 
     def add_transform(self, parent, child, xform):
         if parent not in self.nodes:
@@ -86,16 +94,28 @@ class TFTree(object):
 
         return path
 
-
     def transform_point(self, x, y, z, target, base):
         t = self.lookup_transform(base, target)
         return np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
+
 
 class TFNode(object):
     def __init__(self, name, parent, transform):
         self.parent = parent
         self.name = name
         self.transform = transform
+
+    def to_dict(self):
+        return {'parent': self.parent.to_dict() if self.parent else self.parent,
+                'name': self.name,
+                'transform': self.transform.to_dict() if self.transform else None}
+
+    @classmethod
+    def from_dict(cls, indict):
+        parent, xform = indict['parent'], indict['transform']
+        parent = TFNode.from_dict(parent) if parent else None
+        xform = Transform.from_dict(xform) if xform else None
+        return cls(indict['name'], parent, xform)
 
     @property
     def transformation_matrix(self):
@@ -125,6 +145,12 @@ class Transform(object):
         qx, qy, qz, qw = tft.quaternion_from_euler(roll, pitch, yaw)
         return cls(x, y, z, qx, qy, qz, qw)
 
+    @classmethod
+    def from_dict(cls, indict):
+        x, y, z = indict['xyz']
+        qx, qy, qz, qw = indict['xyzw']
+        return cls(x, y, z, qx, qy, qz, qw)
+
     @property
     def matrix(self):
         out = self.rotation_matrix
@@ -151,3 +177,6 @@ class Transform(object):
 
     def inverse(self):
         return Transform.from_matrix(np.linalg.inv(self.matrix))
+
+    def to_dict(self):
+        return {'xyz': list(self.position), 'xyzw': list(self.quaternion)}
