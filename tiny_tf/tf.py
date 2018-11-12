@@ -13,7 +13,11 @@ class TFTree(object):
     @classmethod
     def from_dict(cls, indict):
         out = cls()
-        out.nodes = {k: TFNode.from_dict(v) for k, v in indict.items()}
+        for k, v in indict.items():
+            n = TFNode.from_dict(v)
+            if not n.parent:  # root encountered
+                continue
+            out.add_transform(n.parent.name, n.name, n.transform)
         return out
 
     def add_transform(self, parent, child, xform):
@@ -106,14 +110,14 @@ class TFNode(object):
         self.transform = transform
 
     def to_dict(self):
-        return {'parent': self.parent.to_dict() if self.parent else self.parent,
+        return {'parent': self.parent.name if self.parent else self.parent,
                 'name': self.name,
                 'transform': self.transform.to_dict() if self.transform else None}
 
     @classmethod
     def from_dict(cls, indict):
         parent, xform = indict['parent'], indict['transform']
-        parent = TFNode.from_dict(parent) if parent else None
+        parent = TFNode(parent, None, None) if parent else None
         xform = Transform.from_dict(xform) if xform else None
         return cls(indict['name'], parent, xform)
 

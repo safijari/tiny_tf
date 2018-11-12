@@ -1,4 +1,5 @@
 from tf import TFNode, TFTree, Transform
+from pprint import pprint
 import numpy as np
 
 ### Transform tests
@@ -17,6 +18,9 @@ def test_tree():
 
     print tree.lookup_transform('camera2', 'map').euler
 
+    pprint(tree.to_dict())
+
+    pprint(TFTree.from_dict(tree.to_dict()).to_dict())
 
 if __name__ == '__main__':
     test_transform()
