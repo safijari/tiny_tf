@@ -8,12 +8,12 @@ class TFTree(object):
         self.nodes = {}
 
     def to_dict(self):
-        return {k: v.to_dict() for k, v in self.nodes.items()}
+        return [v.to_dict() for k, v in self.nodes.items()]
 
     @classmethod
-    def from_dict(cls, indict):
+    def from_dict(cls, inlist):
         out = cls()
-        for k, v in indict.items():
+        for v in inlist:
             n = TFNode.from_dict(v)
             if not n.parent:  # root encountered
                 continue
