@@ -1,0 +1,18 @@
+image: ubuntu
+
+environment:
+  TWINE_PASS:
+    secure: l5f9zb54AYJ/kZgpYI2NGtktBACOM6jA1oQkrzz6wuI=
+
+build_script:
+  - python setup.py sdist
+  - sh: |
+      [[ "$APPVEYOR_REPO_TAG" = "false" ]] && rm -rf wheelhouse/* || echo "Tagged build, not deleting artifacts"
+artifacts:
+  - path: "dist\\*.whl"
+    name: Wheels
+
+deploy_script:
+    - sh: sudo pip install -U twine
+    - sh: |
+        [[ "$APPVEYOR_REPO_TAG" = "true" && "$APPVEYOR_REPO_BRANCH" = "master" && -z "$APPVEYOR_PULL_REQUEST_NUMBER" ]] && twine upload -u $TWINE_USER -p $TWINE_PASS dist/* || echo "Nothing to deploy"
