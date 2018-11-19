@@ -9,8 +9,8 @@ build_script:
   - sh: |
       [[ "$APPVEYOR_REPO_TAG" = "false" ]] && rm -rf wheelhouse/* || echo "Tagged build, not deleting artifacts"
 artifacts:
-  - path: "dist\\*.whl"
-    name: Wheels
+  - path: "dist\\*.tar.gz"
+    name: Outputs
 
 deploy_script:
     - sh: sudo pip install -U twine
