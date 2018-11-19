@@ -5,7 +5,9 @@ environment:
     secure: l5f9zb54AYJ/kZgpYI2NGtktBACOM6jA1oQkrzz6wuI=
 
 build_script:
-  - python setup.py sdist
+  - sh: |
+      [[ "$APPVEYOR_REPO_TAG" = "true" ]] && export VERSION=$APPVEYOR_REPO_TAG || echo "No tag found"
+  - python setup.py bdist_wheel
   - sh: |
       [[ "$APPVEYOR_REPO_TAG" = "false" ]] && rm -rf wheelhouse/* || echo "Tagged build, not deleting artifacts"
 artifacts:
