@@ -18,4 +18,4 @@ artifacts:
 deploy_script:
     - sh: sudo pip install -U twine
     - sh: |
-        [[ "$APPVEYOR_REPO_TAG" = "true" && "$APPVEYOR_REPO_BRANCH" = "master" && -z "$APPVEYOR_PULL_REQUEST_NUMBER" ]] && twine upload -u $TWINE_USER -p $TWINE_PASS dist/* || echo "Nothing to deploy"
+        [[ "$APPVEYOR_REPO_TAG" = "true" && "$APPVEYOR_REPO_BRANCH" = "master" && -z "$APPVEYOR_PULL_REQUEST_NUMBER" ]] && twine upload -u safijari -p $TWINE_PASS dist/* || echo "Nothing to deploy"
