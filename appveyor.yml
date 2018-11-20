@@ -7,7 +7,7 @@ environment:
 build_script:
   - sudo pip install wheel
   - sh: |
-      [[ "$APPVEYOR_REPO_TAG" = "true" ]] && export VERSION=$APPVEYOR_REPO_TAG || echo "No tag found"
+      [[ "$APPVEYOR_REPO_TAG" = "true" ]] && export VERSION=$APPVEYOR_REPO_TAG_NAME || echo "No tag found"
   - python setup.py bdist_wheel
   - sh: |
       [[ "$APPVEYOR_REPO_TAG" = "false" ]] && rm -rf wheelhouse/* || echo "Tagged build, not deleting artifacts"
