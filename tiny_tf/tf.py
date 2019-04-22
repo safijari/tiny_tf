@@ -105,7 +105,16 @@ class TFTree(object):
         """
         t = self.lookup_transform(base, target)
         return np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
-
+    
+    def transform_pose(self, x, y, z, qx, qy, qz, qw, target, base):
+        """
+        Transforms the input parameters (point x,y,z and quaternion qx,qy,qz,qw) from "base" frame to "target" frame.
+        Output is a list: [x, y, z, qx, qy, qz, qw]
+        """
+        t = self.lookup_transform(base, target)
+        xyz = np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
+        q = tft.quaternion_multiply([qx, qy, qz, qw], [t.qx, t.qy, t.qz, t.qw])
+        return [*xyz, *q]
 
 class TFNode(object):
     def __init__(self, name, parent, transform):
