@@ -31,7 +31,6 @@ def set_transformations(tree):
   ts.transform.rotation = geometry_msgs.msg.Quaternion(*tf_transformations.quaternion_from_euler(0, pi*20/180, 0))
   tree.setTransform(ts)
 
-
   # Define a shelf
   ts.header.frame_id = "world"
   ts.child_frame_id = "shelf"
@@ -47,7 +46,7 @@ def set_transformations(tree):
   for i in range(len(points)):
       ts.transform.translation = geometry_msgs.msg.Point(*points[i])
       ts.transform.rotation = geometry_msgs.msg.Quaternion(*tf_transformations.quaternion_from_euler(*rpys[i]))
-      ts.child_frame_id = "object_frame_" + str(i)
+      ts.child_frame_id = "object_frame_" + str(i+1)
       tree.setTransform(ts)
   return  
 
@@ -62,14 +61,14 @@ def test_transformations(tree):
   print(str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
   print(str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
   rpy = tf_transformations.euler_from_quaternion([ps_new.pose.orientation.x, ps_new.pose.orientation.y, ps_new.pose.orientation.z, ps_new.pose.orientation.w])
-  print("In Euler angles: " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
+  print("In Euler angles (rad): " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
   
   ps_new = tree.transformPose("robot_camera", ps)
   print("Robot tooltip position, as seen by the camera / in the camera frame:")
   print(str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
   print(str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
   rpy = tf_transformations.euler_from_quaternion([ps_new.pose.orientation.x, ps_new.pose.orientation.y, ps_new.pose.orientation.z, ps_new.pose.orientation.w])
-  print("In Euler angles: " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
+  print("In Euler angles (rad): " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
 
   ps.header.frame_id = "object_frame_3"
   ps_new = tree.transformPose("robot_camera", ps)
@@ -78,17 +77,17 @@ def test_transformations(tree):
   
   ## Transform a point
   pt = geometry_msgs.msg.PointStamped()
-  pt.point.position.z = 0.5
+  pt.point.z = 0.5
   pt.header.frame_id = "shelf"
 
   pt_new = tree.transformPoint("world", pt)
   print("z = 0.5 on the shelf, in world coordinates:")
-  print(str(pt_new.point.position.x) + ", " + str(pt_new.point.position.y)  + ", " + str(pt_new.point.position.z))
+  print(str(pt_new.point.x) + ", " + str(pt_new.point.y)  + ", " + str(pt_new.point.z))
 
-  pt.point.position.z = 0.0
+  pt.point.z = 0.0
   pt.header.frame_id = "object_frame_2"
   pt_new = tree.transformPoint("robot_wrist", pt)
-  point_array = np.array([pt_new.point.position.x, pt_new.point.position.y, pt_new.point.position.z])
+  point_array = np.array([pt_new.point.x, pt_new.point.y, pt_new.point.z])
   print("Distance of object_frame_2 to robot_wrist:" + str(np.norm(point_array)))
   return
 

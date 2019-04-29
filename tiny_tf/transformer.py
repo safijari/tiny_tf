@@ -33,12 +33,12 @@ class Transformer(TFTree):
         Returns a PointStamped transformed to target_frame.
         """
         t = self.lookup_transform(point_stamped.header.frame_id, target_frame)
-        p = self.transform_point(point_stamped.point.position.x, point_stamped.point.position.y, point_stamped.point.position.z, target_frame, point_stamped.header.frame_id)
+        p = self.transform_point(point_stamped.point.x, point_stamped.point.y, point_stamped.point.z, target_frame, point_stamped.header.frame_id)
         ps_out = geometry_msgs.msg.PointStamped()
         ps_out.header.frame_id = target_frame
-        ps_out.point.position.x = p[0]
-        ps_out.point.position.y = p[1]
-        ps_out.point.position.z = p[2]
+        ps_out.point.x = p[0]
+        ps_out.point.y = p[1]
+        ps_out.point.z = p[2]
         return ps_out
 
     def transformPose(self, target_frame, pose_stamped):
