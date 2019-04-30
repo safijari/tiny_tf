@@ -114,7 +114,7 @@ class TFTree(object):
         t = self.lookup_transform(base, target)
         xyz = np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
         q = tft.quaternion_multiply([qx, qy, qz, qw], [t.qx, t.qy, t.qz, t.qw])
-        return [*xyz, *q]
+        return [xyz[0], xyz[1], xyz[2], q[0], q[1], q[2], q[3]]
 
 class TFNode(object):
     def __init__(self, name, parent, transform):

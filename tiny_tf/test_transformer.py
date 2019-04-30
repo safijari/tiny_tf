@@ -27,14 +27,14 @@ def set_transformations(tree):
 
   ts.header.frame_id = "robot_wrist"
   ts.child_frame_id = "robot_camera"
-  ts.transform.translation.x = geometry_msgs.msg.Point(x=-0.1, y=0.0, z=0.05)
+  ts.transform.translation = geometry_msgs.msg.Point(x=-0.1, y=0.0, z=0.05)
   ts.transform.rotation = geometry_msgs.msg.Quaternion(*tf_transformations.quaternion_from_euler(0, pi*20/180, 0))
   tree.setTransform(ts)
 
   # Define a shelf
   ts.header.frame_id = "world"
   ts.child_frame_id = "shelf"
-  ts.transform.translation.x = geometry_msgs.msg.Point(1.0, 0.0, 0.0)
+  ts.transform.translation = geometry_msgs.msg.Point(1.0, 0.0, 0.0)
   ts.transform.rotation = geometry_msgs.msg.Quaternion(*tf_transformations.quaternion_from_euler(0, 0, 0))
   tree.setTransform(ts)
 
