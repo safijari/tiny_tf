@@ -58,22 +58,22 @@ def test_transformations(tree):
 
   ps_new = tree.transformPose("world", ps)
   print("Robot tooltip position in the world frame:")
-  print(str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
-  print(str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
+  print("xyz: " + str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
+  print("rotation: " + str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
   rpy = tf_transformations.euler_from_quaternion([ps_new.pose.orientation.x, ps_new.pose.orientation.y, ps_new.pose.orientation.z, ps_new.pose.orientation.w])
-  print("In Euler angles (rad): " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
+  print("In Euler angles (deg): " + str(rpy[0]*180/pi) + ", " + str(rpy[1]*180/pi)  + ", " + str(rpy[2]*180/pi) + "\n")
   
   ps_new = tree.transformPose("robot_camera", ps)
   print("Robot tooltip position, as seen by the camera / in the camera frame:")
-  print(str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
-  print(str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
+  print("xyz: " + str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
+  print("rotation: " + str(ps_new.pose.orientation.x) + ", " + str(ps_new.pose.orientation.y)  + ", " + str(ps_new.pose.orientation.z)  + ", " + str(ps_new.pose.orientation.w))
   rpy = tf_transformations.euler_from_quaternion([ps_new.pose.orientation.x, ps_new.pose.orientation.y, ps_new.pose.orientation.z, ps_new.pose.orientation.w])
-  print("In Euler angles (rad): " + str(rpy[0]) + ", " + str(rpy[1])  + ", " + str(rpy[2]))
+  print("In Euler angles (deg): " + str(rpy[0]*180/pi) + ", " + str(rpy[1]*180/pi)  + ", " + str(rpy[2]*180/pi) + "\n")
 
   ps.header.frame_id = "object_frame_3"
   ps_new = tree.transformPose("robot_camera", ps)
   print("object_frame_3 position, as seen by the camera / in the camera frame:")
-  print(str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z))
+  print("xyz: " + str(ps_new.pose.position.x) + ", " + str(ps_new.pose.position.y)  + ", " + str(ps_new.pose.position.z) + "\n")
   
   ## Transform a point
   pt = geometry_msgs.msg.PointStamped()
@@ -82,13 +82,13 @@ def test_transformations(tree):
 
   pt_new = tree.transformPoint("world", pt)
   print("z = 0.5 on the shelf, in world coordinates:")
-  print(str(pt_new.point.x) + ", " + str(pt_new.point.y)  + ", " + str(pt_new.point.z))
+  print("xyz: " + str(pt_new.point.x) + ", " + str(pt_new.point.y)  + ", " + str(pt_new.point.z) + "\n")
 
   pt.point.z = 0.0
   pt.header.frame_id = "object_frame_2"
   pt_new = tree.transformPoint("robot_wrist", pt)
   point_array = np.array([pt_new.point.x, pt_new.point.y, pt_new.point.z])
-  print("Distance of object_frame_2 to robot_wrist:" + str(np.norm(point_array)))
+  print("Distance of object_frame_2 to robot_wrist:" + str(np.linalg.norm(point_array)) + "\n")
   return
 
 if __name__ == '__main__':
