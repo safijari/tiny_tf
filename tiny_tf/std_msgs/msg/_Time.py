@@ -34,9 +34,9 @@ class Time():
       super(Time, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
       if self.data is None:
-        self.data = genpy.Time()
+        self.data = 0 # Time is unused in tiny_tf
     else:
-      self.data = genpy.Time()
+      self.data = 0 # Time is unused in tiny_tf
 
   def _get_types(self):
     """

@@ -48,12 +48,12 @@ string frame_id
       if self.seq is None:
         self.seq = 0
       if self.stamp is None:
-        self.stamp = genpy.Time()
+        self.stamp = 0 # Time is unused in tiny_tf
       if self.frame_id is None:
         self.frame_id = ''
     else:
       self.seq = 0
-      self.stamp = genpy.Time()
+      self.stamp = 0 # Time is unused in tiny_tf
       self.frame_id = ''
 
   def _get_types(self):
