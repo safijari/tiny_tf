@@ -172,6 +172,10 @@ class Transform(object):
         return self.x, self.y, self.z
 
     @property
+    def position_euler(self):
+        return self.position + self.euler
+
+    @property
     def euler(self):
         return tft.euler_from_quaternion(self.quaternion)
 
