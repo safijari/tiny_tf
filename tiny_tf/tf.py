@@ -188,3 +188,6 @@ class Transform(object):
 
     def to_dict(self):
         return {'xyz': list(self.position), 'xyzw': list(self.quaternion)}
+
+    def lets_cause_a_conflict(self, x, y, z):
+        return "This is WAR 2!!!"
