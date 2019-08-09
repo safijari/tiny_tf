@@ -150,6 +150,14 @@ class Transform(object):
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
+    def from_xyt(cls, x, y, t):
+        return Transform.from_position_euler(x, y, 0, 0, 0, t)
+
+    @classmethod
+    def from_pose2d(cls, p):
+        return Transform.from_position_euler(p.x, p.y, 0, 0, 0, p.yaw)
+
+    @classmethod
     def from_dict(cls, indict):
         x, y, z = indict['xyz']
         qx, qy, qz, qw = indict['xyzw']
@@ -170,6 +178,12 @@ class Transform(object):
     @property
     def position(self):
         return self.x, self.y, self.z
+
+    def __add__(self, o):
+        return Transform.from_matrix(self.matrix @ o.matrix)
+
+    def __sub__(self, o):
+        return Transform.from_matrix(o.inverse().matrix @ self.matrix)
 
     @property
     def euler(self):
