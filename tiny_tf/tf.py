@@ -2,6 +2,7 @@ import numpy as np
 from . import transformations as tft
 from collections import namedtuple
 
+inv = tft.inverse_transformation_matrix_fast
 
 class TFTree(object):
     def __init__(self):
@@ -76,9 +77,9 @@ class TFTree(object):
         frame_transform_to_common_parent = get_inverse_xform_for_path(frame_path_to_parent)
         target_transform_to_common_parent = get_inverse_xform_for_path(target_path_to_parent)
 
-        final_xform = np.dot(np.linalg.inv(target_transform_to_common_parent), frame_transform_to_common_parent)
+        final_xform = np.dot(inv(target_transform_to_common_parent), frame_transform_to_common_parent)
 
-        return Transform.from_matrix(np.linalg.inv(final_xform))
+        return Transform.from_matrix(inv(final_xform))
 
     def _get_path_to_parent(self, parent_node, node_name):
         if node_name == parent_node.name:
@@ -210,7 +211,7 @@ class Transform(object):
         return (self.qx, self.qy, self.qz, self.qw)
 
     def inverse(self):
-        return Transform.from_matrix(np.linalg.inv(self.matrix))
+        return Transform.from_matrix(inv(self.matrix))
 
     def to_dict(self):
         return {'xyz': list(self.position), 'xyzw': list(self.quaternion)}

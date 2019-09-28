@@ -1646,6 +1646,14 @@ def inverse_matrix(matrix):
     return numpy.linalg.inv(matrix)
 
 
+def inverse_transformation_matrix_fast(matrix):
+    rot = numpy.identity(4)
+    rot[:3, :3] = matrix[:3, :3]
+    trans = matrix.copy()
+    trans[:3, :3] = numpy.identity(3)
+    return numpy.dot(rot.T, trans)
+
+
 def concatenate_matrices(*matrices):
     """Return concatenation of series of transformation matrices.
 
