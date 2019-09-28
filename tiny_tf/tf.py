@@ -155,7 +155,11 @@ class Transform(object):
 
     @classmethod
     def from_pose2d(cls, p):
-        return Transform.from_position_euler(p.x, p.y, 0, 0, 0, p.yaw)
+        return Transform.from_xyt(p.x, p.y, p.yaw)
+
+    @classmethod
+    def identity(cls):
+        return cls(0, 0, 0, 0, 0, 0, 1)
 
     @classmethod
     def from_dict(cls, indict):
@@ -180,14 +184,26 @@ class Transform(object):
         return self.x, self.y, self.z
 
     def __add__(self, o):
-        return Transform.from_matrix(self.matrix @ o.matrix)
+        return Transform.from_matrix(np.dot(self.matrix, o.matrix))
 
     def __sub__(self, o):
-        return Transform.from_matrix(o.inverse().matrix @ self.matrix)
+        return Transform.from_matrix(np.dot(o.inverse().matrix, self.matrix))
 
     @property
     def euler(self):
         return tft.euler_from_quaternion(self.quaternion)
+
+    @property
+    def roll(self):
+        return self.euler[0]
+
+    @property
+    def pitch(self):
+        return self.euler[1]
+
+    @property
+    def yaw(self):
+        return self.euler[2]
 
     @property
     def quaternion(self):
