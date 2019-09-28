@@ -12,5 +12,5 @@ setup(
     author='Jariullah Safi',
     author_email='safijari@isu.edu',
     packages=find_packages(),
-    install_requires=['numpy'],  # Optional
+    install_requires=['numpy==1.16.4'],  # Optional
 )
