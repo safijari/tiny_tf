@@ -40,7 +40,7 @@ class TFTree(object):
                 parent_nodes.append(node)
 
         if len(parent_nodes) > 1:
-            raise Exception("More than one tree found, this case is unsupported")
+            raise Exception("A frame with more than one parent was found, this case is unsupported (more than one tree or cyclical connections)")
         if len(parent_nodes) == 0:
             raise Exception("No parent node found, there are probably cycles in the tree")
 
@@ -66,7 +66,7 @@ class TFTree(object):
             else:
                 break
 
-        # Note: I do not understand why the part below works
+        # Note safijari: I do not understand why the part below works
 
         def get_inverse_xform_for_path(path):
             transform_to_parent = np.identity(4)
@@ -100,9 +100,22 @@ class TFTree(object):
         return path
 
     def transform_point(self, x, y, z, target, base):
+        """
+        Transforms the input parameters x, y, z from "base" frame to "target" frame.
+        Output is a list: [x, y, z]
+        """
         t = self.lookup_transform(base, target)
         return np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
-
+    
+    def transform_pose(self, x, y, z, qx, qy, qz, qw, target, base):
+        """
+        Transforms the input parameters (point x,y,z and quaternion qx,qy,qz,qw) from "base" frame to "target" frame.
+        Output is a list: [x, y, z, qx, qy, qz, qw]
+        """
+        t = self.lookup_transform(base, target)
+        xyz = np.dot(t.matrix, np.array([x, y, z, 1]))[0:3]
+        q = tft.quaternion_multiply([qx, qy, qz, qw], [t.qx, t.qy, t.qz, t.qw])
+        return [xyz[0], xyz[1], xyz[2], q[0], q[1], q[2], q[3]]
 
 class TFNode(object):
     def __init__(self, name, parent, transform):
