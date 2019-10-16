@@ -1,15 +1,20 @@
 from setuptools import setup, find_packages
 import os
+import xml.etree.ElementTree as ET
+tree = ET.parse('package.xml')
 
-version = '0.0.1-dev'
+def _t(key):
+    return tree.find(key).text
+
+version = _t('version')
 if 'VERSION' in os.environ:
     version = os.environ['VERSION']
 
 setup(
-    name='tiny-tf',
+    name=_t('name'),
     version=version,
-    description='Shameless reimplementation of extremely limited API from Tully Foote\'s TF library',
-    author='Jariullah Safi',
+    description=_t('description'),
+    author=_t('maintainer'),
     author_email='safijari@isu.edu',
     packages=find_packages(),
     install_requires=['numpy==1.16.4'],  # Optional

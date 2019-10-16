@@ -173,6 +173,7 @@ import math
 
 import numpy
 
+
 # Documentation in HTML format can be generated with Epydoc
 __docformat__ = "restructuredtext en"
 
@@ -1179,12 +1180,12 @@ def quaternion_matrix(quaternion):
     True
 
     """
-    q = numpy.array(quaternion[:4], dtype=numpy.float64, copy=True)
-    nq = numpy.dot(q, q)
+    q_ = numpy.array(quaternion[:4], dtype=numpy.float64).copy()
+    nq = numpy.dot(q_, q_)
     if nq < _EPS:
         return numpy.identity(4)
-    q *= math.sqrt(2.0 / nq)
-    q = numpy.outer(q, q)
+    q_ *= math.sqrt(2.0 / nq)
+    q = numpy.outer(q_, q_)
     return numpy.array((
         (1.0-q[1, 1]-q[2, 2],     q[0, 1]-q[2, 3],     q[0, 2]+q[1, 3], 0.0),
         (    q[0, 1]+q[2, 3], 1.0-q[0, 0]-q[2, 2],     q[1, 2]-q[0, 3], 0.0),
@@ -1203,7 +1204,8 @@ def quaternion_from_matrix(matrix):
 
     """
     q = numpy.empty((4, ), dtype=numpy.float64)
-    M = numpy.array(matrix, dtype=numpy.float64, copy=False)[:4, :4]
+    # M = numpy.array(matrix, dtype=numpy.float64)[:4, :4]
+    M = matrix
     t = numpy.trace(M)
     if t > M[3, 3]:
         q[3] = t
@@ -1647,11 +1649,16 @@ def inverse_matrix(matrix):
 
 
 def inverse_transformation_matrix_fast(matrix):
-    rot = numpy.identity(4)
-    rot[:3, :3] = matrix[:3, :3]
-    trans = matrix.copy()
-    trans[:3, :3] = numpy.identity(3)
-    return numpy.dot(rot.T, trans)
+    ident1 = numpy.identity(4)
+    ident2 = numpy.identity(4)
+
+    # rot = matrix.copy()
+    # rot[:3, -1] = 0
+    # trans = matrix.copy()
+    # trans[:3, :3] = numpy.identity(3)
+    ident1[:3, :3] = matrix[:3, :3]
+    ident2[:3, -1] = -matrix[:3, -1]
+    return numpy.dot(ident1.T, ident2)
 
 
 def concatenate_matrices(*matrices):
