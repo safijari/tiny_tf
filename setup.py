@@ -1,7 +1,10 @@
 from setuptools import setup, find_packages
 import os
 import xml.etree.ElementTree as ET
-tree = ET.parse('package.xml')
+import os
+path = (os.path.dirname(os.path.realpath(__file__)))
+
+tree = ET.parse(os.path.join(path, 'package.xml'))
 
 def _t(key):
     return tree.find(key).text

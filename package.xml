@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>tiny_tf</name>
   <version>0.9.7</version>
   <description>Shameless reimplementation of some parts of the API from Tully Foote's TF library</description>
@@ -12,6 +12,7 @@
   <exec_depend>python-numpy</exec_depend>
 
   <export>
-      <!-- <build_type>ament_python</build_type> -->
+      <build_type condition="$ROS_VERSION == 1">cmake</build_type>
+      <build_type condition="$ROS_VERSION == 2">ament_python</build_type>
   </export>
 </package>

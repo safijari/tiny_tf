@@ -12,11 +12,11 @@ def test_tree():
     tree.add_transform('map', 'odom', Transform(1, 1, 1, 0, 0, 0, 1))
     tree.add_transform('odom', 'camera1', Transform.from_position_euler(0, 0, 0, np.pi, 0, 0))
 
-    print tree.lookup_transform('camera1', 'map').euler
+    print(tree.lookup_transform('camera1', 'map').euler)
 
     tree.add_transform('camera1', 'camera2', Transform.from_position_euler(0, 0, 0, np.pi, 0, 0))
 
-    print tree.lookup_transform('camera2', 'map').euler
+    print(tree.lookup_transform('camera2', 'map').euler)
 
     pprint(tree.to_dict())
 
