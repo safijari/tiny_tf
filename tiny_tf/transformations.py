@@ -1652,12 +1652,8 @@ def inverse_transformation_matrix_fast(matrix):
     ident1 = numpy.identity(4)
     ident2 = numpy.identity(4)
 
-    # rot = matrix.copy()
-    # rot[:3, -1] = 0
-    # trans = matrix.copy()
-    # trans[:3, :3] = numpy.identity(3)
-    ident1[:3, :3] = matrix[:3, :3]
-    ident2[:3, -1] = -matrix[:3, -1]
+    ident1[:3, :3] = matrix[:3, :3].copy()
+    ident2[:3, -1] = -matrix[:3, -1].copy()
     return numpy.dot(ident1.T, ident2)
 
 

@@ -2,7 +2,11 @@ import numpy as np
 from . import transformations as tft
 from collections import namedtuple
 
-inv = tft.inverse_transformation_matrix_fast
+inv_fast = tft.inverse_transformation_matrix_fast
+inv_numpy = np.linalg.inv
+
+def inv(m):
+    return inv_fast(m)
 
 class TFTree(object):
     def __init__(self):
