@@ -150,6 +150,12 @@ class Transform(object):
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
+    def from_rot_mat_pos_vec(cls, rot_mat, pos_vec):
+        x, y, z = pos_vec
+        qx, qy, qz, qw = tft.quaternion_from_matrix(rot_mat)
+        return cls(x, y, z, qx, qy, qz, qw)
+
+    @classmethod
     def from_position_euler(cls, x, y, z, roll, pitch, yaw):
         qx, qy, qz, qw = tft.quaternion_from_euler(roll, pitch, yaw)
         return cls(x, y, z, qx, qy, qz, qw)
