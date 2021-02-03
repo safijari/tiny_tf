@@ -5,8 +5,10 @@ from collections import namedtuple
 inv_fast = tft.inverse_transformation_matrix_fast
 inv_numpy = np.linalg.inv
 
+
 def inv(m):
     return inv_fast(m)
+
 
 class TFTree(object):
     def __init__(self):
@@ -46,7 +48,9 @@ class TFTree(object):
         if len(parent_nodes) > 1:
             raise Exception("More than one tree found, this case is unsupported")
         if len(parent_nodes) == 0:
-            raise Exception("No parent node found, there are probably cycles in the tree")
+            raise Exception(
+                "No parent node found, there are probably cycles in the tree"
+            )
 
         return parent_nodes[0]
 
@@ -75,13 +79,21 @@ class TFTree(object):
         def get_inverse_xform_for_path(path):
             transform_to_parent = np.identity(4)
             for node in path:
-                transform_to_parent = np.dot(node.transformation_matrix, transform_to_parent)
+                transform_to_parent = np.dot(
+                    node.transformation_matrix, transform_to_parent
+                )
             return transform_to_parent
 
-        frame_transform_to_common_parent = get_inverse_xform_for_path(frame_path_to_parent)
-        target_transform_to_common_parent = get_inverse_xform_for_path(target_path_to_parent)
+        frame_transform_to_common_parent = get_inverse_xform_for_path(
+            frame_path_to_parent
+        )
+        target_transform_to_common_parent = get_inverse_xform_for_path(
+            target_path_to_parent
+        )
 
-        final_xform = np.dot(inv(target_transform_to_common_parent), frame_transform_to_common_parent)
+        final_xform = np.dot(
+            inv(target_transform_to_common_parent), frame_transform_to_common_parent
+        )
 
         return Transform.from_matrix(inv(final_xform))
 
@@ -115,16 +127,18 @@ class TFNode(object):
         self.transform = transform
 
     def to_dict(self):
-        return {'parent': self.parent.name if self.parent else self.parent,
-                'name': self.name,
-                'transform': self.transform.to_dict() if self.transform else None}
+        return {
+            "parent": self.parent.name if self.parent else self.parent,
+            "name": self.name,
+            "transform": self.transform.to_dict() if self.transform else None,
+        }
 
     @classmethod
     def from_dict(cls, indict):
-        parent, xform = indict['parent'], indict['transform']
+        parent, xform = indict["parent"], indict["transform"]
         parent = TFNode(parent, None, None) if parent else None
         xform = Transform.from_dict(xform) if xform else None
-        return cls(indict['name'], parent, xform)
+        return cls(indict["name"], parent, xform)
 
     @property
     def transformation_matrix(self):
@@ -144,6 +158,14 @@ class Transform(object):
         self.qw = qw
 
     @classmethod
+    def from_position(cls, x=0, y=0, z=0):
+        return cls(x, y, z, 0, 0, 0, 1)
+
+    @classmethod
+    def from_euler(cls, roll=0, pitch=0, yaw=0):
+        return cls.from_position_euler(0, 0, 0, row, pitch, yaw)
+
+    @classmethod
     def from_matrix(cls, mat):
         x, y, z = mat[0:3, -1]
         qx, qy, qz, qw = tft.quaternion_from_matrix(mat)
@@ -156,13 +178,17 @@ class Transform(object):
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
-    def from_position_euler(cls, x, y, z, roll, pitch, yaw):
+    def from_position_euler(cls, x=0, y=0, z=0, roll=0, pitch=0, yaw=0):
         qx, qy, qz, qw = tft.quaternion_from_euler(roll, pitch, yaw)
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
-    def from_xyt(cls, x, y, t):
+    def from_xyt(cls, x=0, y=0, t=0):
         return Transform.from_position_euler(x, y, 0, 0, 0, t)
+
+    @classmethod
+    def from_xyt_deg(cls, x=0, y=0, t=0):
+        return Transform.from_position_euler(x, y, 0, 0, 0, np.deg2rad(t))
 
     @classmethod
     def from_pose2d(cls, p):
@@ -174,8 +200,8 @@ class Transform(object):
 
     @classmethod
     def from_dict(cls, indict):
-        x, y, z = indict['xyz']
-        qx, qy, qz, qw = indict['xyzw']
+        x, y, z = indict["xyz"]
+        qx, qy, qz, qw = indict["xyzw"]
         return cls(x, y, z, qx, qy, qz, qw)
 
     @property
@@ -224,4 +250,7 @@ class Transform(object):
         return Transform.from_matrix(inv(self.matrix))
 
     def to_dict(self):
-        return {'xyz': list(self.position), 'xyzw': list(self.quaternion)}
+        return {"xyz": list(self.position), "xyzw": list(self.quaternion)}
+
+
+T = Transform
