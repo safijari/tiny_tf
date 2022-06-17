@@ -56,9 +56,9 @@ class TFTree(object):
 
     def lookup_transform(self, frame, target):
         if target not in self.nodes:
-            raise Exception("target is not part of the tf tree")
+            raise Exception(f"target {target} is not part of the tf tree")
         if frame not in self.nodes:
-            raise Exception("frame is not part of the tf tree")
+            raise Exception(f"frame {frame} is not part of the tf tree")
         if target == frame:
             return Transform(0, 0, 0, 0, 0, 0, 1)
 
@@ -163,7 +163,13 @@ class Transform(object):
 
     @classmethod
     def from_euler(cls, roll=0, pitch=0, yaw=0):
-        return cls.from_position_euler(0, 0, 0, row, pitch, yaw)
+        return cls.from_position_euler(0, 0, 0, roll, pitch, yaw)
+
+    @classmethod
+    def from_euler_deg(cls, roll=0, pitch=0, yaw=0):
+        return cls.from_position_euler(
+            0, 0, 0, roll * np.pi / 180, pitch * np.pi / 180, yaw * np.pi / 180
+        )
 
     @classmethod
     def from_matrix(cls, mat):
@@ -180,6 +186,11 @@ class Transform(object):
     @classmethod
     def from_position_euler(cls, x=0, y=0, z=0, roll=0, pitch=0, yaw=0):
         qx, qy, qz, qw = tft.quaternion_from_euler(roll, pitch, yaw)
+        return cls(x, y, z, qx, qy, qz, qw)
+
+    @classmethod
+    def from_position_euler_deg(cls, x=0, y=0, z=0, roll=0, pitch=0, yaw=0):
+        qx, qy, qz, qw = tft.quaternion_from_euler(roll * np.pi / 180, pitch * np.pi / 180, yaw * np.pi / 180)
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
