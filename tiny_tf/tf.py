@@ -148,7 +148,7 @@ class TFNode(object):
 
 
 class Transform(object):
-    def __init__(self, x, y, z, qx, qy, qz, qw):
+    def __init__(self, x=0, y=0, z=0, qx=0, qy=0, qz=0, qw=1):
         self.x = x
         self.y = y
         self.z = z
@@ -171,6 +171,14 @@ class Transform(object):
             0, 0, 0, roll * np.pi / 180, pitch * np.pi / 180, yaw * np.pi / 180
         )
 
+    def transform_points_to_world(self, x, y, z):
+        t = self
+        return np.dot(t.matrix, np.vstack([x, y, z, [1] * len(x)]))[0:3]
+
+    def transform_points_to_self(self, x, y, z):
+        t = self
+        return np.dot(t.inverse().matrix, np.vstack([x, y, z, [1] * len(x)]))[0:3]
+
     @classmethod
     def from_matrix(cls, mat):
         x, y, z = mat[0:3, -1]
@@ -190,7 +198,9 @@ class Transform(object):
 
     @classmethod
     def from_position_euler_deg(cls, x=0, y=0, z=0, roll=0, pitch=0, yaw=0):
-        qx, qy, qz, qw = tft.quaternion_from_euler(roll * np.pi / 180, pitch * np.pi / 180, yaw * np.pi / 180)
+        qx, qy, qz, qw = tft.quaternion_from_euler(
+            roll * np.pi / 180, pitch * np.pi / 180, yaw * np.pi / 180
+        )
         return cls(x, y, z, qx, qy, qz, qw)
 
     @classmethod
