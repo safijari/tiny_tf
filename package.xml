@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>tiny_tf</name>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <description>Shameless reimplementation of some parts of the API from Tully Foote's TF library</description>
 
   <maintainer email="safijari@isu.edu">Jariullah Safi</maintainer>
